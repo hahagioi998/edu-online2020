@@ -7,7 +7,7 @@
         <module>service/service-edu</module>
         <module>common</module>
         <module>common/service-base</module>
-        <module>common-utils</module>
+        <module>common/common-utils</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -1,8 +1,10 @@
 package com.qiyu.eduservice.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qiyu.commonutils.R;
 import com.qiyu.eduservice.entity.EduTeacher;
+import com.qiyu.eduservice.entity.vo.TeacherQuery;
 import com.qiyu.eduservice.service.EduTeacherService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,5 +48,35 @@ public class EduTeacherController {
         if (flag) return R.ok();else return R.error();
     }
 
+
+    //3 分页查询讲师的方法
+    //current 当前页
+    //limit 每页记录数
+    @GetMapping("pageTeacher/{current}/{limit}")
+    public R pageListTeacher(@PathVariable long current,
+                           @PathVariable long limit) {
+        Page<EduTeacher> pageTeacher = new Page<>(current, limit);
+        eduTeacherService.page(pageTeacher,null);
+
+        long total = pageTeacher.getTotal();
+        List<EduTeacher> records = pageTeacher.getRecords();
+
+        return R.ok().data("total",total).data("rows",records);
+    }
+    //3 分页查询讲师的方法
+    //current 当前页
+    //limit 每页记录数
+    @GetMapping("pageTeacher/{current}/{limit}")
+    public R pageListTeacher(@PathVariable long current,
+                             @PathVariable long limit,
+                             @RequestBody TeacherQuery teacherQuery) {
+        Page<EduTeacher> pageTeacher = new Page<>(current, limit);
+        eduTeacherService.page(pageTeacher,null);
+
+        long total = pageTeacher.getTotal();
+        List<EduTeacher> records = pageTeacher.getRecords();
+
+        return R.ok().data("total",total).data("rows",records);
+    }
 }
 
