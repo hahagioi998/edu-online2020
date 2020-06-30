@@ -44,11 +44,5 @@ public class SwaggerConfig {
                 .build();
     }
 
-    /**
-     * 逻辑删除插件
-     */
-    @Bean
-    public ISqlInjector sqlInjector() {
-        return new LogicSqlInjector();
-    }
+
 }

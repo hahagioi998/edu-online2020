@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiyu.eduservice.mapper.EduCourseMapper">
+    <select id="selectPublishVoById" resultType="com.qiyu.eduservice.entity.vo.CoursePublishVo">
+            SELECT ec.title,
+                    ec.cover,
+                    ec.lesson_num AS lessonNum,
+                    CONVERT(ec.price, DECIMAL(8,2)) AS price,
+                    s1.title AS subjectLevelOne,
+                    s2.title AS subjectLevelTwo,
+                    et.name AS teacherName
+            FROM edu_course ec
+            LEFT JOIN edu_teacher et ON ec.teacher_id = et.id
+                LEFT JOIN edu_subject s1 ON ec.subject_parent_id = s1.id
+                LEFT JOIN edu_subject s2 ON ec.subject_id = s2.id
+                WHERE ec.id = #{courseId};
+    </select>
+</mapper>
