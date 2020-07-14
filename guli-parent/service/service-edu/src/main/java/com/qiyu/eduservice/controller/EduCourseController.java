@@ -1,15 +1,20 @@
 package com.qiyu.eduservice.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qiyu.commonutils.R;
+import com.qiyu.eduservice.entity.EduCourse;
 import com.qiyu.eduservice.entity.vo.CourseInfoForm;
 import com.qiyu.eduservice.entity.vo.CoursePublishVo;
+import com.qiyu.eduservice.entity.vo.CourseQuery;
 import com.qiyu.eduservice.service.EduCourseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -78,5 +83,43 @@ public class EduCourseController {
         courseService.publishCourseById(courseId);
         return R.ok();
     }
+
+
+    @ApiOperation(value = "分页课程列表")
+    @GetMapping("pageQuery/{page}/{limit}")
+    public R pageQuery(
+            @ApiParam(name = "page", value = "当前页码", required = true)
+            @PathVariable Long page,
+
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
+            @PathVariable Long limit,
+
+            @ApiParam(name = "courseQuery", value = "查询对象", required = false)
+                    CourseQuery courseQuery){
+
+        Page<EduCourse> pageParam = new Page<>(page, limit);
+        System.out.println(courseQuery);
+        courseService.pageQuery(pageParam, courseQuery);
+        List<EduCourse> records = pageParam.getRecords();
+
+        long total = pageParam.getTotal();
+
+        return  R.ok().data("total", total).data("rows", records);
+    }
+
+    @ApiOperation(value = "根据ID删除课程")
+    @DeleteMapping("removeById/{courseId}")
+    public R removeById(
+            @ApiParam(name = "courseId", value = "课程ID", required = true)
+            @PathVariable String courseId){
+
+        boolean result = courseService.removeCourseById(courseId);
+        if(result){
+            return R.ok();
+        }else{
+            return R.error().message("删除失败");
+        }
+    }
+
 }
 

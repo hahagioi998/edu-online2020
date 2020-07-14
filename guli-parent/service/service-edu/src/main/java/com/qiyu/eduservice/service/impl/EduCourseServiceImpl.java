@@ -1,14 +1,20 @@
 package com.qiyu.eduservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qiyu.eduservice.entity.EduCourse;
 import com.qiyu.eduservice.entity.EduCourseDescription;
 import com.qiyu.eduservice.entity.vo.CourseInfoForm;
 import com.qiyu.eduservice.entity.vo.CoursePublishVo;
+import com.qiyu.eduservice.entity.vo.CourseQuery;
 import com.qiyu.eduservice.mapper.EduCourseMapper;
+import com.qiyu.eduservice.service.EduChapterService;
 import com.qiyu.eduservice.service.EduCourseDescriptionService;
 import com.qiyu.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qiyu.eduservice.service.EduVideoService;
 import com.qiyu.servicebase.handler.exception.GuliException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +33,12 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
 
     @Autowired
     private EduCourseDescriptionService courseDescriptionService;
+
+    @Autowired
+    private EduVideoService eduVideoService;
+
+    @Autowired
+    private EduChapterService eduChapterService;
 
 
     @Transactional
@@ -100,5 +112,57 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         course.setStatus(EduCourse.COURSE_NORMAL);
         Integer count = baseMapper.updateById(course);
         return null != count && count > 0;
+    }
+
+    @Override
+    public void pageQuery(Page<EduCourse> pageParam, CourseQuery courseQuery) {
+        QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("gmt_create");
+
+        if (courseQuery == null){
+            baseMapper.selectPage(pageParam, queryWrapper);
+            return;
+        }
+
+
+
+        String title = courseQuery.getTitle();
+        String teacherId = courseQuery.getTeacherId();
+        String subjectParentId = courseQuery.getSubjectParentId();
+        String subjectId = courseQuery.getSubjectId();
+
+        if (!StringUtils.isEmpty(title)) {
+            queryWrapper.like("title", title);
+        }
+
+        if (!StringUtils.isEmpty(teacherId) ) {
+            queryWrapper.eq("teacher_id", teacherId);
+        }
+
+        if (!StringUtils.isEmpty(subjectParentId)) {
+            queryWrapper.ge("subject_parent_id", subjectParentId);
+        }
+
+        if (!StringUtils.isEmpty(subjectId)) {
+            queryWrapper.ge("subject_id", subjectId);
+        }
+
+        baseMapper.selectPage(pageParam, queryWrapper);
+
+
+
+
+    }
+
+    @Override
+    public boolean removeCourseById(String courseId) {
+        //根据id删除所有视频
+        eduVideoService.removeByCourseId(courseId);
+
+        //根据id删除所有章节
+        eduChapterService.removeByCourseId(courseId);
+
+        Integer result = baseMapper.deleteById(courseId);
+        return null != result && result > 0;
     }
 }

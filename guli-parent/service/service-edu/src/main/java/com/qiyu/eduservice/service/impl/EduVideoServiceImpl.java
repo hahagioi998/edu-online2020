@@ -1,5 +1,6 @@
 package com.qiyu.eduservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.qiyu.eduservice.entity.EduVideo;
 import com.qiyu.eduservice.mapper.EduVideoMapper;
 import com.qiyu.eduservice.service.EduVideoService;
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EduVideoServiceImpl extends ServiceImpl<EduVideoMapper, EduVideo> implements EduVideoService {
 
+    @Override
+    public Boolean removeByCourseId(String courseId) {
+        QueryWrapper<EduVideo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("course_id", courseId);
+        Integer count = baseMapper.delete(queryWrapper);
+        return null != count && count > 0;
+    }
 }
