@@ -4,11 +4,9 @@ package com.qiyu.staservice.controller;
 import com.qiyu.commonutils.R;
 import com.qiyu.staservice.service.StatisticsDailyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020-07-30
  */
 @RestController
-@RequestMapping("/staservice/sta")
+@RequestMapping("/edusta/sta")
+@CrossOrigin
 public class StatisticsDailyController {
     @Autowired
     private StatisticsDailyService staService;
@@ -30,5 +29,13 @@ public class StatisticsDailyController {
         staService.registerCount(day);
         return R.ok();
     }
+    //图表显示，返回两部分数据，日期json数组，数量json数组
+    @GetMapping("showData/{type}/{begin}/{end}")
+    public R showData(@PathVariable String type,@PathVariable String begin,
+                      @PathVariable String end) {
+        Map<String,Object> map = staService.getShowData(type,begin,end);
+        return R.ok().data(map);
+    }
+
 }
 
