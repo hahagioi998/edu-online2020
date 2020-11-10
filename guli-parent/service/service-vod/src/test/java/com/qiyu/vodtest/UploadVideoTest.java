@@ -50,8 +50,8 @@ public class UploadVideoTest {
      */
     @Test
     public void testUploadVideo(){
-        String accessKeyId = "LTAIFMevLMwQJ4KH";
-        String accessKeySecret = "xxSV5MjyBrwSUbz0WV2003XCSWdm5l";
+        String accessKeyId = "";
+        String accessKeySecret = "";
 
         //1.音视频上传-本地文件上传
         //视频标题(必选)
