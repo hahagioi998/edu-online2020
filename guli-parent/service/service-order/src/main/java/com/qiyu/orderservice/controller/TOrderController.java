@@ -7,6 +7,7 @@ import com.qiyu.commonutils.R;
 import com.qiyu.orderservice.entity.TOrder;
 import com.qiyu.orderservice.service.TOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 public class TOrderController {
 
     @Autowired
+    @Qualifier("orderServiceImpl")
     private TOrderService orderService;
 
     //1 生成订单的方法

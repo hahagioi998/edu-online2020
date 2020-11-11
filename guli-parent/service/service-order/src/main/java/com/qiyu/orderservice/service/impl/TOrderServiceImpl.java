@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @author qiyu
  * @since 2020-07-29
  */
-@Service
+@Service("orderServiceImpl")
 public class TOrderServiceImpl extends ServiceImpl<TOrderMapper, TOrder> implements TOrderService {
 
 

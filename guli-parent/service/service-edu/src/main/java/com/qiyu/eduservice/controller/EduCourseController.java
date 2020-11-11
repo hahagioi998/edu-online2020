@@ -8,6 +8,7 @@ import com.qiyu.eduservice.entity.vo.CourseInfoForm;
 import com.qiyu.eduservice.entity.vo.CoursePublishVo;
 import com.qiyu.eduservice.entity.vo.CourseQuery;
 import com.qiyu.eduservice.service.EduCourseService;
+import com.qiyu.servicebase.idempotent.annotation.Idempotent;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,7 @@ public class EduCourseController {
 
     //根据课程id查询课程基本信息
     @GetMapping("getCourseInfo/{courseId}")
+    @Idempotent(key = "#courseId")
     public R getCourseInfo(@PathVariable String courseId) {
         CourseInfoForm courseInfoVo = courseService.getCourseInfo(courseId);
         return R.ok().data("courseInfoVo", courseInfoVo);
@@ -67,7 +69,7 @@ public class EduCourseController {
     @GetMapping("getCoursePublishVoById/{courseId}")
     public R getCoursePublishVoById(
             @ApiParam(name = "courseId", value = "课程ID", required = true)
-            @PathVariable("courseId") String courseId){
+            @PathVariable("courseId") String courseId) {
 
         CoursePublishVo courseInfoForm = courseService.getCoursePublishVoById(courseId);
         return R.ok().data("item", courseInfoForm);
@@ -78,7 +80,7 @@ public class EduCourseController {
     @PutMapping("publishCourse/{courseId}")
     public R publishCourseById(
             @ApiParam(name = "id", value = "课程ID", required = true)
-            @PathVariable("courseId") String courseId){
+            @PathVariable("courseId") String courseId) {
 
         courseService.publishCourseById(courseId);
         return R.ok();
@@ -95,7 +97,7 @@ public class EduCourseController {
             @PathVariable Long limit,
 
             @ApiParam(name = "courseQuery", value = "查询对象", required = false)
-                    CourseQuery courseQuery){
+                    CourseQuery courseQuery) {
 
         Page<EduCourse> pageParam = new Page<>(page, limit);
         System.out.println(courseQuery);
@@ -104,19 +106,19 @@ public class EduCourseController {
 
         long total = pageParam.getTotal();
 
-        return  R.ok().data("total", total).data("rows", records);
+        return R.ok().data("total", total).data("rows", records);
     }
 
     @ApiOperation(value = "根据ID删除课程")
     @DeleteMapping("removeById/{courseId}")
     public R removeById(
             @ApiParam(name = "courseId", value = "课程ID", required = true)
-            @PathVariable String courseId){
+            @PathVariable String courseId) {
 
         boolean result = courseService.removeCourseById(courseId);
-        if(result){
+        if (result) {
             return R.ok();
-        }else{
+        } else {
             return R.error().message("删除失败");
         }
     }
